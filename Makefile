@@ -12,7 +12,7 @@ OBJS= $(SRCDIR)/main.o
 #if has to be able to read again when the compiler meet the instantiation of the class template.
 #the effect now is the same as define all the interface in tstack.h rather than in a seperate tstack.cpp
 
-CXXFLAGS+= -I./h
+CXXFLAGS+= -g -I./h
 LIBDIR=
 LDFLAGS+= $(LIBDIR)
 

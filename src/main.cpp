@@ -10,15 +10,20 @@
 #include <stdio.h>
 #include <iostream>
 #include <math.h>
+#include <string.h>
 
 using namespace std;
 
-//#define TESTCASE_1
-#define TESTCASE_2
+#define DEBUG
+#define TESTCASE_1
+//#define TESTCASE_2
 
-#define For(start,end) for(int cnt = start; cnt <= end; cnt++)
+#define For(start,end) for(int cntForLoop = (start); cntForLoop <= (end); cntForLoop++)
 #define MAX(a,b) ((a) > (b) ? (a):(b))
 #define MIN(x,y)   ((x)<(y)? (x):(y))
+//#define P_LINE cout << "line " << __LINE__ << endl
+#define P_LINE 
+
 
 template <class T> inline void checkMax(T &a, T b) {if(b>a) a = b;}
 template <class T> inline void checkMin(T &a, T b) {if(b<a) a = b;}
@@ -31,104 +36,160 @@ int main()
 {
 
 #ifdef TESTCASE_1
-	{//TestCase 1: a[N+M] is consist of number 1,...N, please output the repeated number. No extra space, O(M+N)
-	const string debugStrCase1 = "TestCase 1: a[N+M] is consist of number 1,...N, please output the repeated number. No extra space, O(M+N)";
+	{//TestCase 1: Manacher: A simple linear time algorithm for finding longest palindrome sub-string
+	const string debugStrCase1 = "Manacher, O(n): A simple linear time algorithm for finding longest palindrome sub-string";
 	cout << endl << caseSeperate << endl << debugStrCase1 << endl << caseSeperate << endl;
 
 	/* pseudo code:
-	from a[0] to a[N+M-1]
-	{
-		while ((a[i] != i + 1) && (a[i] != -1) 
-		{
-			//exchange a[a[i] -1] and a[i] 
-			int index = a[i] -1;
-			if(a[index] == a[i])
-			{
-				a[i] = -1;
-				output a[i];
+	http://blog.csdn.net/ggggiqnypgjg/article/details/6645824
+	
+	int manacher(int n) {
+	22
+		int mx = 0; //记录前面回文串最长影响到的地方。不一定是最长回文串造成的。
+	23
+		int id; //最长影响串的ID;
+	24
+		p[0] = 0;
+	25
+		int i;
+	26
+		int ans = 0;
+	27
+		for (i = 1; i < n; i++) {
+	28
+			p[i] = 1;
+	29
+			if (mx > i) { //2*id-i是i关于id的对称点相当于是id-(i-id);
+	30
+				p[i] = p[2 * id - i];
+	31
+	 
+	32
+				//由于对称点的回文半径可能超过mx-i,因为mx后面的还没有配过
+	33
+				//所以要取小的。等等继续配
+	34
+				if (mx - i < p[i])
+	35
+					p[i] = mx - i;
+	36
 			}
-			else //put the ball into the basket
-			{
-				set a[i] = a[index];
-				set a[index] = index + 1;
+	37
+			while (str[i - p[i]] == str[i + p[i]])
+	38
+				p[i]++;
+	39
+			if (i + p[i] > mx) {
+	40
+				mx = i + p[i];
+	41
+				id = i;
+	42
 			}
+	43
+			if (ans < p[i])
+	44
+				ans = p[i];
+	45
 		}
+	46
+	 
+	47
+		return ans;
+	48
 	}
-	print a[N] to a[N+M-1]
-
-	{
-                while (A[i] != i + 1 && A[i] != -1)
-                {
-                    int index = A[i] - 1;
-                    if (A[index] == A[i])
-                    {
-                        A[i] = -1;
-                        Console.WriteLine(A[index]);
-                    }
-                    else
-                    {
-                        A[i] = A[index];
-                        A[index] = index + 1;
-                    }
-                }
-            }
 
             
 	*/
-	int N,M;
-	
-	cout << " N = "; cin >> N;
-	cout << " M = "; cin >> M;
+	string inputStr;
+	cout << "please input a string, no longer than 200" << endl; 
+	cin >> inputStr;
+#ifdef DEBUG
+	cout << "input is: " << inputStr << endl;
+#endif
 
-	int* array = new int[N+M];
+	// STEP 1: add '#' in between string, to tackle odd/even length palindrome string
+	char *insertStr = new char[inputStr.length()*2 + 2];
 
-	cout << "please enter N + M numbers, choose from 1 to N, use Enter to seperate" << endl;
-
-	int inCnt(0);
-	while(inCnt < N+M)
+	insertStr[0] = '$';
+	insertStr[1] = '#';
+	For(0,inputStr.length() - 1)
 	{
-		cin >> array[inCnt++];
+		insertStr[(cntForLoop<<1) + 2] = inputStr[cntForLoop];
+		insertStr[(cntForLoop<<1) + 3] = '#';
 	}
+	insertStr[inputStr.length()*2 + 2] = 0; //inputStr[inputStr.length()]; //Great Important to end the string!!!!!!
+#ifdef DEBUG
+	cout << "after insert '#', the array is: " << insertStr << endl;
+#endif
 
-	for(inCnt = 0; inCnt < N+M; inCnt++)
+	//STEP 2: manacher
+	int mx(0); // record the longest element that is palindrome. 记录前面回文串最长影响到的地方。不一定是最长回文串造成的。
+	int centralMx(1);
+	int longest(1);
+	int centralLongest(0);
+	int *len = new int[inputStr.length()*2 + 2];
+	int centralNumber(0);
+
+	len[0] = 1;
+	For(1,inputStr.length()*2 + 1)
 	{
-		// when the ball in basket[inCnt] is not ball number inCnt + 1, change until the right number ball in it 
-		while((array[inCnt] != inCnt + 1) && (array[inCnt] != -1) && (array[inCnt] != -2))
+		if(mx > cntForLoop)
 		{
-			int index = array[inCnt] - 1;
-			//the target ball is correct, exchange finish and output the repeated number
-			if((array[index] == index + 1) ||(array[index] == -2))
-			{
-				array[inCnt] = -1;
-				if(array[index] != -2)
-				{
-					cout << "find repeated number: " << index + 1 << " " << endl;
-					array[index] = -2;
-				}
-			}
-			//exchange the ball to the correct place
-			else
-			{
-				array[inCnt] = array[index];
-				array[index] = index + 1;
-			}
-			
-			cout << inCnt << ": [";
-			{
-				for(int i(0); i < N+M; i++)
-					cout << array[i] << " ";
-			}
-			cout << "]" << endl;
+			P_LINE;
+			len[cntForLoop] = MIN(len[centralMx - (cntForLoop - centralMx)],len[centralMx] + centralMx - cntForLoop);
 		}
+		else
+		{
+			len[cntForLoop] = 1;
+		}
+		
+			while(insertStr[cntForLoop - len[cntForLoop]] == insertStr[cntForLoop + len[cntForLoop]])
+			{
+				len[cntForLoop]++;
+				if(len[cntForLoop] + cntForLoop == inputStr.length()*2 + 2) //end of the string
+					break;
+				P_LINE;
+			}
+			if((centralLongest < len[cntForLoop]) && len[cntForLoop] > 2)
+			{
+				P_LINE;
+				longest = len[cntForLoop];
+				centralLongest = cntForLoop;
+			}
+			P_LINE;
+			if(mx < cntForLoop + len[cntForLoop] - 1)
+			{
+				mx = cntForLoop + len[cntForLoop] - 1;
+				centralMx = cntForLoop;
+			}
+		
 	}
 
-	
-	delete[] array; 
-	
+	cout << "len[]: ";
+	For(0,inputStr.length()*2 + 1)
+		cout << len[cntForLoop] << " " ;
+	cout << endl;
+	//DONE
+	if(centralLongest != 0)
+	{
+		cout << "The longest palindrome substring is: " << centralLongest << "," << longest << endl;
+		For(centralLongest - longest + 1, centralLongest + longest - 1)
+		{
+			cntForLoop++;
+			if(cntForLoop < centralLongest + longest - 1)
+				cout << insertStr[cntForLoop];
+		}
+		cout << endl;
+	}
+	else
+		cout << "There is no palindrome substring" << endl;
+	delete[] len; 
+	delete[] insertStr;
 	
 
 	
-	const string conclusionStrCase1 = "kinds of counting sort";
+	const string conclusionStrCase1 = "manacher";
 	cout << endl << "CONCLUSION: " << conclusionStrCase1 << endl;
 	}//TestCase 1
 #endif
