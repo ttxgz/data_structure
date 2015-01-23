@@ -77,4 +77,4 @@ $RECYCLE.BIN/
 #ttxgz
 ./src/*.o
 ./bin/*
-./source_insight/*
+source_insight/*
