@@ -7,14 +7,23 @@
 * Comment:
 */
 
-#include <stdio.h>
+//#include <stdio.h>
 #include <iostream>
 #include <math.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <ctime>
+#include "testcase1.h"
+#include "testcase2.h"
+#include "testcase3.h"
+
 
 using namespace std;
 
-//#define TESTCASE_1
+#define TESTCASE_1
 #define TESTCASE_2
+#define TESTCASE_3
+
 
 #define For(start,end) for(int cnt = start; cnt <= end; cnt++)
 #define MAX(a,b) ((a) > (b) ? (a):(b))
@@ -31,166 +40,45 @@ int main()
 {
 
 #ifdef TESTCASE_1
-	{//TestCase 1: a[N+M] is consist of number 1,...N, please output the repeated number. No extra space, O(M+N)
-	const string debugStrCase1 = "TestCase 1: a[N+M] is consist of number 1,...N, please output the repeated number. No extra space, O(M+N)";
+	//TestCase 1: 2 threads to access 1 variables, without mutual protection //
+	const string debugStrCase1 = "TestCase 1: 2 threads to access 1 variables, without mutual protection";
 	cout << endl << caseSeperate << endl << debugStrCase1 << endl << caseSeperate << endl;
 
-	/* pseudo code:
-	from a[0] to a[N+M-1]
-	{
-		while ((a[i] != i + 1) && (a[i] != -1) 
-		{
-			//exchange a[a[i] -1] and a[i] 
-			int index = a[i] -1;
-			if(a[index] == a[i])
-			{
-				a[i] = -1;
-				output a[i];
-			}
-			else //put the ball into the basket
-			{
-				set a[i] = a[index];
-				set a[index] = index + 1;
-			}
-		}
-	}
-	print a[N] to a[N+M-1]
+	int val_1(0);
+	TestCase1(val_1);
+	cout << "val: " << val_1 << endl;
 
-	{
-                while (A[i] != i + 1 && A[i] != -1)
-                {
-                    int index = A[i] - 1;
-                    if (A[index] == A[i])
-                    {
-                        A[i] = -1;
-                        Console.WriteLine(A[index]);
-                    }
-                    else
-                    {
-                        A[i] = A[index];
-                        A[index] = index + 1;
-                    }
-                }
-            }
-
-            
-	*/
-	int N,M;
-	
-	cout << " N = "; cin >> N;
-	cout << " M = "; cin >> M;
-
-	int* array = new int[N+M];
-
-	cout << "please enter N + M numbers, choose from 1 to N, use Enter to seperate" << endl;
-
-	int inCnt(0);
-	while(inCnt < N+M)
-	{
-		cin >> array[inCnt++];
-	}
-
-	for(inCnt = 0; inCnt < N+M; inCnt++)
-	{
-		// when the ball in basket[inCnt] is not ball number inCnt + 1, change until the right number ball in it 
-		while((array[inCnt] != inCnt + 1) && (array[inCnt] != -1) && (array[inCnt] != -2))
-		{
-			int index = array[inCnt] - 1;
-			//the target ball is correct, exchange finish and output the repeated number
-			if((array[index] == index + 1) ||(array[index] == -2))
-			{
-				array[inCnt] = -1;
-				if(array[index] != -2)
-				{
-					cout << "find repeated number: " << index + 1 << " " << endl;
-					array[index] = -2;
-				}
-			}
-			//exchange the ball to the correct place
-			else
-			{
-				array[inCnt] = array[index];
-				array[index] = index + 1;
-			}
-			
-			cout << inCnt << ": [";
-			{
-				for(int i(0); i < N+M; i++)
-					cout << array[i] << " ";
-			}
-			cout << "]" << endl;
-		}
-	}
-
-	
-	delete[] array; 
-	
-	
-
-	
-	const string conclusionStrCase1 = "kinds of counting sort";
+	const string conclusionStrCase1 = "without mutual protection, the val is [50000,100000] (run several times to verify)";
 	cout << endl << "CONCLUSION: " << conclusionStrCase1 << endl;
-	}//TestCase 1
 #endif
 
 #ifdef TESTCASE_2
-	//TestCase 2: a[N-2] is consist of 1,...,N, without repeated number. Print the 2 lost number. No extra spase used
-	const string debugStrCase2 = "TestCase 2: a[N-2] is consist of 1,...,N, without repetative number. Print the 2 lost number. No extra spase used";
-	cout << endl << caseSeperate << endl << debugStrCase2 << endl << caseSeperate << endl;
-	
-	int N;
-	
-	cout << " N = "; cin >> N;
-	
-	int* array = new int[N-2];
+		//TestCase 2: 2 threads to access 1 variables, with mutex (mutual exclusion) //
+		const string debugStrCase2 = "TestCase 2: 2 threads to access 1 variables, with mutex (mutual exclusion)";
+		cout << endl << caseSeperate << endl << debugStrCase2 << endl << caseSeperate << endl;
 
-	cout << "please enter N - 2 numbers, choose from 1 to N, no repeated number, use Enter to seperate" << endl;
+		int val_2(0);
+		TestCase2(val_2);
+		cout << "val: " << val_2 << endl;
 
-	int inCnt(0);
-	while(inCnt < N-2)
-	{
-		cin >> array[inCnt++];
-	}
-	
-	cout << "input array is: [";
-	for(int cnt = 0; cnt < N-2; cnt++)
-		cout << array[cnt] << ",";
-	cout << "]" << endl;
-
-	/*
-		sum = 1 + 2 + ... + N = N*(N+1)/2
-		squareSum = 1*1 + 2*2 + ... + N*N = N*(N+1)*(2N+1)/6
-		mul = N!
-		
-		sum = a + b
-		squareSum = a*a + b*b
-		mul = 2ab
-	*/
-	int sum = N*(N+1)>>1;
-	int squareSum = sum*(2*N + 1)/3;
-	int mul(1);
-
-	for(int cnt = 1; cnt <= N; cnt++)
-	{
-		mul = mul*cnt;
-	}
-
-	for(int cnt = 0; cnt < N - 2; cnt++)
-	{
-		sum -= array[cnt];						// a+b
-		squareSum -= array[cnt]*array[cnt];		//a*a + b*b
-		mul = mul/array[cnt];					//a*b
-	}
-
-	int difference = sqrt(squareSum - 2*mul);	// |a - b|
-
-	cout << " two missing number is: " << ((sum + difference)>>1) << ", " << ((sum - difference)>>1) << endl;
-	
-	delete[] array;
-	
-	const string conclusionStrCase2 = "calc: a + b, a2 + b2, 2ab, then a-b, then done";
-	cout << endl << "CONCLUSION: " << conclusionStrCase2 << endl;
+		const string conclusionStrCase2 = "with mutex (mutual exclusion) , the val is always 100000(run several times to verify)";
+		cout << endl << "CONCLUSION: " << conclusionStrCase2 << endl;
 #endif
 
+#ifdef TESTCASE_3
+		//TestCase 3:
+		const string debugStrCase3 = "TestCase 3: use semaphore, create 3 thread, to print A,B,C, and its thread id, the order should be: ABCABC";
+		cout << endl << caseSeperate << endl << debugStrCase3 << endl << caseSeperate << endl;
+
+		TestCase3();
+
+		const string conclusionStrCase3 = "use 3 semaphore";
+		cout << endl << "CONCLUSION: " << conclusionStrCase3 << endl;
+#endif
+
+#if 0
+	while(1)
+		;
+#endif
 	return 0;
 }
