@@ -16,13 +16,15 @@
 #include "testcase1.h"
 #include "testcase2.h"
 #include "testcase3.h"
+#include "testcase4.h"
 
 
 using namespace std;
 
-#define TESTCASE_1
-#define TESTCASE_2
-#define TESTCASE_3
+//#define TESTCASE_1
+//#define TESTCASE_2
+//#define TESTCASE_3
+#define TESTCASE_4
 
 
 #define For(start,end) for(int cnt = start; cnt <= end; cnt++)
@@ -76,6 +78,16 @@ int main()
 		cout << endl << "CONCLUSION: " << conclusionStrCase3 << endl;
 #endif
 
+#ifdef TESTCASE_4
+		//TestCase 4:
+		const string debugStrCase4 = "TestCase 4: 2 producer, 4 buffers, 4 consumer";
+		cout << endl << caseSeperate << endl << debugStrCase4 << endl << caseSeperate << endl;
+
+		TestCase4();
+
+		const string conclusionStrCase4 = "using semaphore";
+		cout << endl << "CONCLUSION: " << conclusionStrCase4 << endl;
+#endif
 #if 0
 	while(1)
 		;

@@ -5,7 +5,7 @@ CXX= g++
 RM= rm
 
 EXEC= $(BINDIR)/cpp_test.exe
-OBJS= $(SRCDIR)/testcase3.o $(SRCDIR)/main.o $(SRCDIR)/testcase1.o $(SRCDIR)/testcase2.o
+OBJS= $(SRCDIR)/testcase4.o $(SRCDIR)/testcase3.o $(SRCDIR)/main.o $(SRCDIR)/testcase1.o $(SRCDIR)/testcase2.o
 #OBJS= $(SRCDIR)/main.o
 
 #CAN NOT write: OBJS= $(SRCDIR)/main.o $(SRCDIR)/tstack.o 
