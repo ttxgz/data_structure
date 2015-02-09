@@ -17,30 +17,19 @@
 #define INBOUNDDATAMANAGER_
 
 
-//-------- TYPES INCLUDES
-#include "VocalFeedbackResponseMessage.h"
-#include "CancelCallResponse.h"
-#include "AutomaticCrashNotification_Message.h"
-#include "IncomingVoiceCall.h"
-#include "MsdAckResponse.h"
-#include "IncomingSMS.h"
-#include "CallStatusMessage.h"
-#include "ButtonStatus_Message.h"
-#include "GPS_FIXED_POSITION_message.h"
-#include "SmsAckResponse.h"
+
 #include <mqueue.h>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
-#include <boost/array.hpp>
-#include <boost/bind.hpp>
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/thread.hpp>
+//#include <boost/array.hpp>
+#include <bind.hpp>
+//#include <boost/enable_shared_from_this.hpp>
+//#include <boost/shared_ptr.hpp>
+#include <thread.h>
 
 //-------- MESSAGES INCLUDES
 
 //-------- Shared Library INCLUDES
-#include "ActivateOrchestrator.h"
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>

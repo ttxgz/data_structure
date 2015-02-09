@@ -5,7 +5,7 @@ CXX= g++
 RM= rm
 
 EXEC= $(BINDIR)/cpp_test.exe
-OBJS= $(SRCDIR)/main.o
+OBJS= $(SRCDIR)/main.o $(SRCDIR)/testcase1.o
 
 #CAN NOT write: OBJS= $(SRCDIR)/main.o $(SRCDIR)/tstack.o 
 #because tstack is a class template, should not be compile to a specific obj before used/instantiate. 
